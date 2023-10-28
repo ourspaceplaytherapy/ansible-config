@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /usr/local/bin/perl /usr/local/lib/webmin/miniserv.pl --nofork /usr/local/etc/webmin/miniserv.conf

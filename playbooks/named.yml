@@ -1,0 +1,11 @@
+---
+
+- name: install named for rndc
+  hosts: ourspace
+  vars:
+    srv: bind918
+  become: true
+  tasks:
+  - name: install {{ srv }}
+    pkgng:
+      name: "{{ srv }}"

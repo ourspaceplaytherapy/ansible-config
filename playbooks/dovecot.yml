@@ -1,0 +1,58 @@
+---
+
+- name: install and activate dovecot
+  hosts: ourspace
+  become: true
+  tasks:
+  - name: install dovecot
+    pkgng:
+      name: dovecot
+  - name: add dovecot runsv directory
+    ansible.builtin.file:
+      path: /etc/sv/dovecot
+      state: directory
+      mode: '0755'
+  - name: add dovecot runsv file
+    ansible.builtin.template:
+      src: ../templates/runit/dovecot_run
+      dest: /etc/sv/dovecot/run
+      owner: root
+      group: wheel
+      mode: '0755'
+  - name: create default config structure
+    ansible.builtin.copy:
+      src: /usr/local/etc/dovecot/example-config/
+      dest: /usr/local/etc/dovecot/
+      remote_src: true
+  - name: add template files
+    ansible.builtin.template:
+      src: '{{ item.src }}'
+      dest: '{{ item.dest }}'
+    loop:
+      - { src: '../templates/dovecot/conf.d/10-master.conf', dest: '/usr/local/etc/dovecot/conf.d/10-master.conf' }
+      - { src: '../templates/dovecot/conf.d/auth-system.conf.ext', dest: '/usr/local/etc/dovecot/conf.d/auth-system.conf.ext.conf' }
+  - name: configure dovecot
+    ansible.builtin.lineinfile:
+      dest: "{{ item.dest }}"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    loop:
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-auth.conf', regexp: '^auth_mechanisms =', line: 'auth_mechanisms = plain login' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-mail.conf', regexp: '^#?first_valid_gid =', line: 'first_valid_gid = 1000' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-mail.conf', regexp: '^#?first_valid_uid =', line: 'first_valid_uid = 1000' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-mail.conf', regexp: '^#?mail_location =', line: 'mail_location = mdbox:~/.mdbox' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-mail.conf', regexp: '^#?mail_privileged_group =', line: 'mail_privileged_group = mail' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/15-lda.conf', regexp: '^lda_mailbox_autocreate =', line: 'lda_mailbox_autocreate = yes' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/15-lda.conf', regexp: '^lda_mailbox_autosubscribe =', line: 'lda_mailbox_autosubscribe = yes' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-ssl.conf', regexp: '^ssl_cert =', line: 'ssl_cert = </usr/local/etc/letsencrypt/live/{{ ansible_nodename }}/fullchain.pem' }
+      - { dest: '/usr/local/etc/dovecot/conf.d/10-ssl.conf', regexp: '^ssl_key =', line: 'ssl_key = </usr/local/etc/letsencrypt/live/{{ ansible_nodename }}/privkey.pem' }
+      - { dest: '/usr/local/etc/dovecot/dovecot.conf', regexp: '^protocols =', line: 'protocols = imap lmtp' }
+  - name: enable dovecot boot
+    ansible.builtin.file:
+      src: /etc/sv/dovecot
+      dest: /var/service/dovecot
+      state: link
+  - name: reload dovecot
+    community.general.runit:
+      name: dovecot
+      state: reloaded

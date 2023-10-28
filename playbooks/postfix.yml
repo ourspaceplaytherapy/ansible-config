@@ -1,0 +1,58 @@
+---
+
+- name: install and activate postfix
+  hosts: ourspace
+  become: true
+  tasks:
+  - name: install postfix-sasl
+    pkgng:
+      name: postfix-sasl
+  - name: add postfix runsv directory
+    ansible.builtin.file:
+      path: /etc/sv/postfix
+      state: directory
+      mode: '0755'
+  - name: add postfix runsv file
+    ansible.builtin.template:
+      src: ../templates/runit/postfix_run
+      dest: /etc/sv/postfix/run
+      owner: root
+      group: wheel
+      mode: '0755'
+  - name: configure postfix
+    ansible.builtin.lineinfile:
+      dest: /usr/local/etc/postfix/main.cf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    loop:
+      - { regexp: '^myhostname = ', line: 'myhostname = {{ ansible_nodename }}' }
+      - { regexp: '^mydomain = ', line: 'mydomain = {{ ansible_nodename.split(".")[1:]|join(".") }}' }
+      - { regexp: '^myorigin = ', line: 'myorigin = $mydomain' }
+      - { regexp: '^mydestination = ', line: 'mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain, ourspace.bayofrum.net' }
+      - { regexp: '^mynetworks = ', line: 'mynetworks = 127.0.0.0/8 192.168.1.0/24' }
+      - { regexp: '^alias_maps = ', line: 'alias_maps = hash:/etc/mail/aliases' }
+      - { regexp: '^alias_database = ', line: 'alias_database = hash:/etc/mail/aliases' }
+      - { regexp: '^mailbox_command = ', line: 'mailbox_command = /usr/local/libexec/dovecot/deliver' }
+      - { regexp: '^smtpd_sasl_auth_enable = ', line: 'smtpd_sasl_auth_enable = yes' }
+      - { regexp: '^smtpd_sasl_type = ', line: 'smtpd_sasl_type = dovecot' }
+      - { regexp: '^smtpd_sasl_path = ', line: 'smtpd_sasl_path = private/dovecot-auth' }
+      - { regexp: '^relayhost =', line: 'relayhost = [chrysaor.bayofrum.net]' }
+      - { regexp: '^smtp_sasl_auth_enable =', line: 'smtp_sasl_auth_enable = yes' }
+      - { regexp: '^smtp_sasl_password_maps =', line: 'smtp_sasl_password_maps = hash:/usr/local/etc/postfix/relay_passwd' }
+      - { regexp: '^smtp_sasl_security_options =', line: 'smtp_sasl_security_options =' }
+      - { regexp: '^smtp_tls_security_level =', line: 'smtp_tls_security_level = encrypt' }
+      - { regexp: '^smtpd_tls_security_level =', line: 'smtpd_tls_security_level = may' }
+      - { regexp: '^smtpd_tls_cert_file =', line: 'smtpd_tls_cert_file = /usr/local/etc/letsencrypt/live/$myhostname/fullchain.pem' }
+      - { regexp: '^smtpd_tls_key_file =', line: 'smtpd_tls_key_file = /usr/local/etc/letsencrypt/live/$myhostname/privkey.pem' }
+      - { regexp: '^smtpd_milters =', line: 'smtpd_milters = inet:127.0.0.1:8891' }
+      - { regexp: '^non_smtpd_milters =', line: 'non_smtpd_milters = $smtpd_milters' }
+      - { regexp: '^milter_default_action =', line: 'milter_default_action = accept' }
+  - name: enable postfix boot
+    ansible.builtin.file:
+      src: /etc/sv/postfix
+      dest: /var/service/postfix
+      state: link
+  - name: reload postfix
+    community.general.runit:
+      name: postfix
+      state: reloaded

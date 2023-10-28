@@ -1,0 +1,21 @@
+---
+
+# Base
+- ansible.builtin.import_playbook: playbooks/cron.yml
+- ansible.builtin.import_playbook: playbooks/ntpd.yml
+- ansible.builtin.import_playbook: playbooks/sshd.yml
+
+# Mail
+- ansible.builtin.import_playbook: playbooks/dovecot.yml
+- ansible.builtin.import_playbook: playbooks/postfix.yml
+- ansible.builtin.import_playbook: playbooks/opendkim.yml
+
+# Web server etc
+- ansible.builtin.import_playbook: playbooks/apache24.yml
+- ansible.builtin.import_playbook: playbooks/webmin.yml
+- ansible.builtin.import_playbook: playbooks/usermin.yml
+- ansible.builtin.import_playbook: playbooks/roundcube.yml
+- ansible.builtin.import_playbook: playbooks/syncthing.yml
+
+# Extra required packages
+- ansible.builtin.import_playbook: playbooks/named.yml
