@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate webmin
-  hosts: ourspace
+  hosts: all
   vars:
     srv: webmin
   become: true

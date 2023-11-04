@@ -1,7 +1,7 @@
 ---
 
 - name: install named for rndc
-  hosts: ourspace
+  hosts: all
   vars:
     srv: bind918
   become: true

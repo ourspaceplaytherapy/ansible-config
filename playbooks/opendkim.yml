@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate opendkim
-  hosts: ourspace
+  hosts: all
   become: true
   vars:
     dkim_key: dkim0

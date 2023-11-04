@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate syncthing
-  hosts: servers
+  hosts: all
   vars:
     srv: syncthing
   become: true
