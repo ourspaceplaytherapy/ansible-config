@@ -1,0 +1,1 @@
+@reboot root /usr/bin/printf 'Subject: \%s\n\n\%s\n\n\%s\n\n\%s\n' 'Server has rebooted!' "Hello," "The server has rebooted and needs the secure key inputting before synchronisation will work again." "Please visit https://elgar.ourspaceplaytherapy.co.uk/cgi-bin/passphrase_entry.sh and follow the instructions." | /usr/sbin/sendmail admins

@@ -1,0 +1,28 @@
+---
+
+- name: add nsupdate cronjob
+  hosts: all
+  become: true
+  tasks:
+  - name: add cronjobs dir
+    ansible.builtin.file:
+      path: {{ item }}
+      state: directory
+      mode: '0755'
+    loop:
+      - '/root/cronjobs'
+      - '/etc/cron.d'
+  - name: add nsupdate script
+    ansible.builtin.template:
+      src: '../templates/root/cronjobs/nsupdate-script.sh'
+      dest: '/root/cronjobs/nsupdate-script.sh'
+      owner: root
+      group: wheel
+      mode: '0755'
+  - name: add cronjob
+    ansible.builtin.template:
+      src: '../templates/cron.d/chrysaor_nsupdate'
+      dest: '/etc/cron.d/chrysaor_nsupdate'
+      owner: root
+      group: wheel
+      mode: '0644'
