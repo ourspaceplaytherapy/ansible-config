@@ -4,6 +4,7 @@
 - ansible.builtin.import_playbook: playbooks/cron.yml
 - ansible.builtin.import_playbook: playbooks/ntpd.yml
 - ansible.builtin.import_playbook: playbooks/sshd.yml
+- ansible.builtin.import_playbook: playbooks/periodic_ansible_pull.yml
 
 # Mail
 - ansible.builtin.import_playbook: playbooks/dovecot.yml
