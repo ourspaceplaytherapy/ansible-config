@@ -4,6 +4,8 @@
 
 ip=$(/usr/local/bin/dig +short myip.opendns.com @resolver1.opendns.com)
 
+expr $ip : '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || exit 1
+
 #update delete elgar.ourspaceplaytherapy.co.uk. A
 #update add elgar.ourspaceplaytherapy.co.uk. 600 A $ip
 /usr/local/bin/nsupdate -k /usr/local/etc/namedb/rndc.conf << EOF
