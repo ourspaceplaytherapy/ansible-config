@@ -1,4 +1,5 @@
 #!/bin/sh
-HOME=/root
+HOME=/var/secure/syncthing
 export HOME
+[ -d $HOME ] || exit 1
 exec /usr/local/bin/syncthing
