@@ -3,13 +3,9 @@
 ## Onboarding
 
 Create user account and give random password; accept defaults for groups etc
-but set shell to 'nologin'
+but set shell to 'nologin'.  Either use Webmin or shell command here:
 
     $ sudo adduser
-
-Create home directory for Syncthing, for example for username aethelred
-
-    $ sudo install -d -o syncthing -g syncthing /var/secure/syncthing/aethelred
 
 Send them this email:
 
@@ -47,4 +43,4 @@ Send them this email:
 >
 > [4] https://github.com/syncthing/syncthing-macos/releases/
 
-Finally, once they've logged in and confirmed they've installed Syncthing and connected to Elgar, log in to Syncthing and add the new shared folder, authorise their computer and select the appropriate folders to share (home folder, shared and for admins only the admin folder).  Ensure that the notification on Syncthing actually matches their computer!
+Finally, once they've logged in and confirmed they've installed Syncthing and connected to Elgar, log in to Syncthing and create the new shared folder, authorise their computer and select the appropriate folders to share (home folder, shared and for admins only the admin folder).  Ensure that the notification on Syncthing actually matches their computer!
