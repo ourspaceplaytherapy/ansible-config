@@ -13,6 +13,8 @@
 
 # Web server etc
 - ansible.builtin.import_playbook: playbooks/apache24.yml
+- ansible.builtin.import_playbook: playbooks/mysql-server.yml
+- ansible.builtin.import_playbook: playbooks/nextcloud_deps.yml
 - ansible.builtin.import_playbook: playbooks/webmin.yml
 - ansible.builtin.import_playbook: playbooks/usermin.yml
 - ansible.builtin.import_playbook: playbooks/roundcube.yml
