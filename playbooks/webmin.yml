@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate webmin
-  hosts: all
+  hosts: server
   vars:
     srv: webmin
   become: true

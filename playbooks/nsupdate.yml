@@ -1,7 +1,7 @@
 ---
 
 - name: add nsupdate cronjob
-  hosts: all
+  hosts: server
   become: true
   tasks:
   - name: add cronjobs dir

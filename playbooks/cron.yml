@@ -1,7 +1,7 @@
 ---
 
 - name: run cron from runit
-  hosts: all
+  hosts: server
   vars:
     srv: cron
   become: true

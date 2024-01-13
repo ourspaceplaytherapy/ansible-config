@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate dovecot
-  hosts: all
+  hosts: server
   become: true
   tasks:
   - name: install dovecot

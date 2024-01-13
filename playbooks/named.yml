@@ -1,7 +1,7 @@
 ---
 
 - name: install named for rndc
-  hosts: all
+  hosts: server
   vars:
     srv: bind918
   become: true

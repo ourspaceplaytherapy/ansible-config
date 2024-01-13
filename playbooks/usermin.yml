@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate usermin
-  hosts: all
+  hosts: server
   vars:
     srv: usermin
   become: true
