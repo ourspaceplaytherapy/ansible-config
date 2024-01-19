@@ -1,7 +1,7 @@
 ---
 
 - name: enable runit for ntpd
-  hosts: server
+  hosts: elgar
   become: true
   tasks:
   - name: add ntpd runsv directory

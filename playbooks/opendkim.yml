@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate opendkim
-  hosts: server
+  hosts: elgar
   become: true
   vars:
     dkim_key: dkim0

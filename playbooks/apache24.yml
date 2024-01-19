@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate apache24
-  hosts: server
+  hosts: elgar
   vars:
     srv: apache24
   become: true

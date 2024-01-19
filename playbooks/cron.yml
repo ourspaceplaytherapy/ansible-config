@@ -1,7 +1,7 @@
 ---
 
 - name: run cron from runit
-  hosts: server
+  hosts: elgar
   vars:
     srv: cron
   become: true

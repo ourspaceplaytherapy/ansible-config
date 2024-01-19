@@ -1,7 +1,7 @@
 ---
 
 - name: add nsupdate cronjob
-  hosts: server
+  hosts: elgar
   become: true
   tasks:
   - name: add cronjobs dir

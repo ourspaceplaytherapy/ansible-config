@@ -2,6 +2,6 @@ all:
   children:
     ourspace:
       children:
-        server:
+        elgar:
           hosts:
             elgar.ourspaceplaytherapy.co.uk

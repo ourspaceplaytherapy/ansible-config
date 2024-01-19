@@ -1,7 +1,7 @@
 ---
 
 - name: ensure Nextcloud environment works
-  hosts: server
+  hosts: elgar
   become: true
   tasks:
   - name: install required PHP modules
