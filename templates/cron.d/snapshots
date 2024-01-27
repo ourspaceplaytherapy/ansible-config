@@ -1,0 +1,4 @@
+@hourly         root    /bin/sh /root/cronjobs/snapshots.sh hourly
+@daily          root    /bin/sh /root/cronjobs/snapshots.sh daily
+@weekly         root    /bin/sh /root/cronjobs/snapshots.sh weekly
+@monthly        root    /bin/sh /root/cronjobs/snapshots.sh monthly

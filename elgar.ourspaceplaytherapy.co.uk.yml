@@ -7,6 +7,10 @@
 - ansible.builtin.import_playbook: playbooks/sshd.yml
 - ansible.builtin.import_playbook: playbooks/periodic_ansible_pull.yml
 
+# Cronjobs
+- ansible.builtin.import_playbook: playbooks/nsupdate.yml
+- ansible.builtin.import_playbook: playbooks/snapshots.yml
+
 # Mail
 - ansible.builtin.import_playbook: playbooks/dovecot.yml
 - ansible.builtin.import_playbook: playbooks/postfix.yml
