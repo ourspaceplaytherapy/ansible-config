@@ -1,7 +1,7 @@
 ---
 
 - name: install and activate syncthing
-  hosts: elgar
+  hosts: none
   vars:
     srv: syncthing
   become: true
