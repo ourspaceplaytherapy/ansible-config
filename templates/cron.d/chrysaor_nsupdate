@@ -1,1 +1,2 @@
-@hourly         root    /bin/sh /root/cronjobs/nsupdate-script.sh
+# min	hr	date	month	wday	user	cmd
+9,29,49	*	*	*	*	root	/bin/sh /root/cronjobs/nsupdate-script.sh
