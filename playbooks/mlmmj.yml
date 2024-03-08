@@ -1,0 +1,76 @@
+---
+
+- name: install and activate mlmmj
+  hosts: elgar
+  become: true
+  vars:
+    location: /var/spool/mlmmj
+    srv: mlmmj_webui
+  tasks:
+  - name: install mlmmj
+    pkgng:
+      name: mlmmj
+  - name: configure postfix
+    ansible.builtin.lineinfile:
+      dest: '/usr/local/etc/postfix/{{ item.file }}'
+      regexp: '{{ item.regexp }}'
+      line: '{{ item.line }}'
+    loop:
+      - { file: 'main.cf', regexp: '^#?recipient_delimiter = ', line: 'recipient_delimiter = +' }
+      - { file: 'main.cf', regexp: '^mlmmj_destination_recipient_limit =', line: 'mlmmj_destination_recipient_limit = 1' }
+      - { file: 'main.cf', regexp: '^virtual_alias_maps =', line: 'virtual_alias_maps = hash:{{ location }}/virtual' }
+      - { file: 'main.cf', regexp: '^transport_maps =', line: 'transport_maps = hash:{{ location }}/transport' }
+      - { file: 'master.cf', regexp: '^mlmmj ', line: 'mlmmj   unix  -       n       n       -       -       pipe flags=ORhu user=mlmmj argv=/usr/local/bin/mlmmj-receive -F -L {{ location }}/$nexthop' }
+  - name: add cronjob
+    ansible.builtin.template:
+      src: '../templates/cron.d/mlmmj'
+      dest: '/etc/cron.d/mlmmj'
+      owner: root
+      group: wheel
+      mode: '0644'
+  - name: create mlmmj group
+    ansible.builtin.group:
+      name: mlmmj
+      state: present
+  - name: create mlmmj user
+    ansible.builtin.user:
+      name: mlmmj
+      group: mlmmj
+      state: present
+      shell: /usr/sbin/nologin
+      home: '{{ location }}'
+  - name: check webui exists
+    ansible.builtin.stat:
+      path: '{{ location }}/webui'
+    register: webui_exists
+  - name: install webui
+    ansible.builtin.git:
+      repo: https://github.com/tchapi/mlmmj-simple-web-interface
+      dest: '{{ location }}/webui'
+    when: webui_exists.stat.isdir is not defined or not webui_exists.stat.isdir
+  - name: add {{ srv }} runsv directory
+    ansible.builtin.file:
+      path: '/etc/sv/{{ srv }}'
+      state: directory
+      mode: '0755'
+  - name: add {{ srv }} runsv file
+    ansible.builtin.template:
+      src: '../templates/runit/{{ srv }}_run'
+      dest: '/etc/sv/{{ srv }}/run'
+      owner: root
+      group: wheel
+      mode: '0755'
+  - name: enable {{ srv }} boot
+    ansible.builtin.file:
+      src: '/etc/sv/{{ srv }}'
+      dest: '/var/service/{{ srv }}'
+      state: link
+  - name: add Apache config file
+    ansible.builtin.template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: root
+      group: wheel
+      mode: '0644'
+    loop:
+      - { src: '../templates/apache24/Includes/110_mlmmj_webui.conf', dest: '/usr/local/etc/apache24/Includes/110_mlmmj_webui.conf' }

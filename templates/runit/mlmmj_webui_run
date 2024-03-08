@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd /var/spool/mlmmj/webui
+
+exec chpst -u mlmmj /usr/local/bin/node index.js

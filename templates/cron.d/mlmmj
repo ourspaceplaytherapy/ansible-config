@@ -1,0 +1,2 @@
+#minute hour    mday    month   wday    who     command
+0	*/2	*	*	*	root	/usr/local/bin/mlmmj-maintd -F -L /var/spool/mlmmj/ourspace-announce
