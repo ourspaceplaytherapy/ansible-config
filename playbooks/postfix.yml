@@ -33,6 +33,7 @@
       - { regexp: '^alias_maps = ', line: 'alias_maps = hash:/etc/mail/aliases' }
       - { regexp: '^alias_database = ', line: 'alias_database = hash:/etc/mail/aliases' }
       - { regexp: '^mailbox_command = ', line: 'mailbox_command = /usr/local/libexec/dovecot/deliver' }
+      - { regexp: '^mailbox_size_limit =', line: 'mailbox_size_limit = 0' }
       - { regexp: '^message_size_limit =', line: 'message_size_limit = 52428800' }
       - { regexp: '^smtpd_sasl_auth_enable = ', line: 'smtpd_sasl_auth_enable = yes' }
       - { regexp: '^smtpd_sasl_type = ', line: 'smtpd_sasl_type = dovecot' }
