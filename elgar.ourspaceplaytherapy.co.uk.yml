@@ -18,7 +18,7 @@
 - ansible.builtin.import_playbook: playbooks/webmin.yml
 - ansible.builtin.import_playbook: playbooks/usermin.yml
 - ansible.builtin.import_playbook: playbooks/roundcube.yml
-- ansible.builtin.import_playbook: playbooks/syncthing.yml
+- ansible.builtin.import_playbook: playbooks/classroombookings.yml
 
 # Extra required packages
 - ansible.builtin.import_playbook: playbooks/named.yml
