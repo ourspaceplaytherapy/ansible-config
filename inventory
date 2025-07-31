@@ -5,3 +5,9 @@ all:
         elgar:
           hosts:
             elgar.ourspaceplaytherapy.co.uk
+        jail:
+          hosts:
+            dc.ourspaceplaytherapy.co.uk
+        dc:
+          hosts:
+            dc.ourspaceplaytherapy.co.uk
