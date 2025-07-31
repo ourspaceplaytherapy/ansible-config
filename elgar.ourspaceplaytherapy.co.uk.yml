@@ -22,3 +22,4 @@
 
 # Extra required packages
 - ansible.builtin.import_playbook: playbooks/named.yml
+- ansible.builtin.import_playbook: playbooks/jail.yml
