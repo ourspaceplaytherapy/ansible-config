@@ -1,0 +1,9 @@
+---
+
+- name: install relevant pkgs
+  hosts: all
+  become: true
+  tasks:
+  - name: install relevant pkgs
+    community.general.pkgng:
+      name: devel/git sysutils/runit security/sudo editors/vim textproc/ydiff
