@@ -3,7 +3,7 @@
 - name: install named for rndc
   hosts: elgar
   vars:
-    srv: bind918
+    srv: bind-tools
   become: true
   tasks:
   - name: install {{ srv }}
