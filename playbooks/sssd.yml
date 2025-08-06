@@ -22,7 +22,7 @@
       mode: '0755'
   - name: add sssd runsv file
     ansible.builtin.template:
-      src: ../../templates/runit/sssd_run
+      src: ../templates/runit/sssd_run
       dest: /etc/sv/sssd/run
       owner: root
       group: wheel
