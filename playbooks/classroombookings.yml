@@ -1,0 +1,21 @@
+---
+
+- name: install and configure classroombookings
+  hosts: elgar
+  become: true
+  vars:
+    location: /usr/local/www/apache24/data/roombookings
+  tasks:
+  - name: check location exists
+    ansible.builtin.stat:
+      path: '{{ location }}'
+    register: location_exists
+  - name: install location
+    ansible.builtin.git:
+      repo: https://github.com/classroombookings/classroombookings
+      dest: '{{ location }}'
+    when: location_exists.stat.isdir is not defined or not location_exists.stat.isdir
+  - name: make sure www owns all
+    ansible.builtin.command:
+      cmd: 'chown -R www:www {{ location }}'
+    when: location_exists.stat.isdir is not defined or not location_exists.stat.isdir
