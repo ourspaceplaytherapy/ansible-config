@@ -1,0 +1,55 @@
+---
+
+- name: install and activate sssd
+  hosts: all
+  become: true
+  tasks:
+  - name: install sssd
+    pkgng:
+      name: sssd2 pam_mkhomedir
+  - name: configure sssd
+    ansible.builtin.template:
+      src: ../templates/sssd/sssd.conf
+      dest: /usr/local/etc/sssd/sssd.conf
+      owner: root
+      group: wheel
+      mode: '0600'
+    register: conf
+  - name: add sssd runsv directory
+    ansible.builtin.file:
+      path: /etc/sv/sssd
+      state: directory
+      mode: '0755'
+  - name: add sssd runsv file
+    ansible.builtin.template:
+      src: ../../templates/runit/sssd_run
+      dest: /etc/sv/sssd/run
+      owner: root
+      group: wheel
+      mode: '0755'
+  - name: enable sssd boot
+    ansible.builtin.file:
+      src: /etc/sv/sssd
+      dest: /var/service/sssd
+      state: link
+  - name: add to nsswitch
+    ansible.builtin.replace:
+      path: /etc/nsswitch.conf
+      regexp: '^(group|passwd): compat$'
+      replace: '\1: files sss winbind'
+#  - name: configure pam for sssd
+#    ansible.builtin.template:
+#      src: "../../templates/pam.d/{{item}}"
+#      dest: "/etc/pam.d/{{item}}"
+#      owner: root
+#      group: wheel
+#      mode: '0644'
+#    loop:
+#      - system
+#      - sshd
+  - name: reload sssd
+    community.general.runit:
+      name: sssd
+      state: reloaded
+      service_dir: /var/service
+    when: conf.changed
