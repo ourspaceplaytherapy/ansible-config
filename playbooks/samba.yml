@@ -1,0 +1,73 @@
+---
+
+- name: install and configure samba416
+  hosts: elgar
+  become: true
+  tasks:
+  - name: install samba416
+    pkgng:
+      name: samba416
+  - name: add samba runsv directory
+    ansible.builtin.file:
+      path: "/etc/sv/{{ item }}"
+      state: directory
+      mode: '0755'
+    loop:
+      - smbd
+      - nmbd
+      - winbindd
+  - name: add samba runsv file
+    ansible.builtin.template:
+      src: "../../templates/runit/{{ item }}_run"
+      dest: "/etc/sv/{{ item }}/run"
+      owner: root
+      group: wheel
+      mode: '0755'
+    loop:
+      - smbd
+      - nmbd
+      - winbindd
+  - name: configure samba
+    ansible.builtin.template:
+      src: ../templates/smb4.conf
+      dest: /usr/local/etc/smb4.conf
+      owner: root
+      group: wheel
+      mode: '0644'
+    register: conf
+  - name: check host-specific smb config file exists for {{ ansible_fqdn }}
+    local_action: "stat path=../hostfiles/smb4_local.conf/{{ ansible_fqdn }}"
+    register: smb4_local_conf
+  - name: add host-specific smb config file if exists
+    ansible.builtin.template:
+      src: "../hostfiles/smb4_local.conf/{{ ansible_fqdn }}"
+      dest: /usr/local/etc/smb4_local.conf
+      owner: root
+      group: wheel
+      mode: '0644'
+    when: smb4_local_conf.stat.exists
+    register: local_conf
+  - name: enable samba boot
+    ansible.builtin.file:
+      src: "/etc/sv/{{ item }}"
+      dest: "/var/service/{{ item }}"
+      state: link
+    loop:
+      - smbd
+      - nmbd
+      - winbindd
+  - name: add samba db directory
+    ansible.builtin.file:
+      path: "/var/db/samba4"
+      state: directory
+      mode: '0755'
+  - name: reload samba
+    community.general.runit:
+      name: "{{ item }}"
+      state: reloaded
+      service_dir: /var/service
+    loop:
+      - smbd
+      - nmbd
+      - winbindd
+    when: local_conf.changed or conf.changed
