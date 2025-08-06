@@ -37,16 +37,16 @@
       path: /etc/nsswitch.conf
       regexp: '^(group|passwd): compat$'
       replace: '\1: files sss winbind'
-#  - name: configure pam for sssd
-#    ansible.builtin.template:
-#      src: "../../templates/pam.d/{{item}}"
-#      dest: "/etc/pam.d/{{item}}"
-#      owner: root
-#      group: wheel
-#      mode: '0644'
-#    loop:
-#      - system
-#      - sshd
+  - name: configure pam for sssd
+    ansible.builtin.template:
+      src: "../templates/pam.d/{{item}}"
+      dest: "/etc/pam.d/{{item}}"
+      owner: root
+      group: wheel
+      mode: '0644'
+    loop:
+      - system
+      - sshd
   - name: reload sssd
     community.general.runit:
       name: sssd
