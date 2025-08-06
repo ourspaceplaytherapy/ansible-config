@@ -1,7 +1,7 @@
 ---
 
 - name: enable runit for sshd
-  hosts: elgar
+  hosts: all
   become: true
   tasks:
   - name: configure sshd
